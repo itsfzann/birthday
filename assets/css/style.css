@@ -206,15 +206,18 @@ button {
 ========================= */
 
 .hidden {
+  display: none;
   opacity: 0;
   visibility: hidden;
 }
 
 #mainContent {
+  display: block;
   transition: 1s ease;
 }
 
 #mainContent.show {
+  display: block;
   opacity: 1;
   visibility: visible;
 }

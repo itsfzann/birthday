@@ -1,4 +1,4 @@
-﻿(function () {
+﻿window.addEventListener("DOMContentLoaded", () => {
   const openingScreen = document.getElementById("openingScreen");
   const openBtn = document.getElementById("openBtn");
   const mainContent = document.getElementById("mainContent");
@@ -144,11 +144,18 @@
       if (mainContent) {
         mainContent.classList.remove("hidden");
         mainContent.classList.add("show");
+        mainContent.style.display = "block";
       }
 
       if (musicPlayer) {
         musicPlayer.classList.add("active");
       }
+
+      window.setTimeout(() => {
+        if (openingScreen) {
+          openingScreen.style.display = "none";
+        }
+      }, 650);
 
       playMusic();
       createHearts(8);
@@ -218,7 +225,8 @@
         return;
       }
 
-      bgMusic.currentTime = (Number(musicProgress.value) / 100) * bgMusic.duration;
+      bgMusic.currentTime =
+        (Number(musicProgress.value) / 100) * bgMusic.duration;
     });
   }
 
@@ -292,7 +300,7 @@
       },
       {
         threshold: 0.15,
-      }
+      },
     );
 
     revealElements.forEach((element) => revealObserver.observe(element));
@@ -339,13 +347,15 @@
       if (option.dataset.answer === "correct") {
         option.classList.add("correct");
         if (quizResult) {
-          quizResult.textContent = "Correct. But honestly... there isn't just one thing. ♡";
+          quizResult.textContent =
+            "Correct. But honestly... there isn't just one thing. ♡";
         }
         createHearts(6);
       } else {
         option.classList.add("wrong");
         if (quizResult) {
-          quizResult.textContent = "Nice try... but you know there's a better answer. 👀";
+          quizResult.textContent =
+            "Nice try... but you know there's a better answer. 👀";
         }
       }
     });
@@ -369,9 +379,12 @@
   }
 
   const wishes = {
-    happiness: "Semoga kamu selalu punya alasan untuk tersenyum, bahkan di hari-hari yang sulit. ♡",
-    success: "Semoga semua usaha dan kerja kerasmu membawa kamu semakin dekat dengan impianmu.",
-    dreams: "Semoga satu per satu hal yang kamu impikan menemukan jalannya untuk menjadi nyata.",
+    happiness:
+      "Semoga kamu selalu punya alasan untuk tersenyum, bahkan di hari-hari yang sulit. ♡",
+    success:
+      "Semoga semua usaha dan kerja kerasmu membawa kamu semakin dekat dengan impianmu.",
+    dreams:
+      "Semoga satu per satu hal yang kamu impikan menemukan jalannya untuk menjadi nyata.",
     love: "Semoga kamu selalu dikelilingi oleh orang-orang yang tulus menyayangi dan menghargaimu. ♡",
   };
 
@@ -427,4 +440,4 @@
       finalScreen.classList.remove("active");
     }
   });
-})();
+});
