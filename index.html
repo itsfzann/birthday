@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
@@ -18,39 +18,76 @@
   </head>
 
   <body>
-    <!-- =========================
-         OPENING
-    ========================== -->
+    <audio id="bgMusic" loop preload="auto">
+      <source src="assets/music/shape-of-my-heart.mp3" type="audio/mpeg" />
+    </audio>
+
     <div class="opening-screen" id="openingScreen">
-      <div class="stars"></div>
+      <div class="opening-stars"></div>
 
       <div class="opening-content">
-        <span class="opening-small"> I made something for you... </span>
-
+        <span class="opening-small">I made something for you...</span>
         <h1>
           Someone special<br />
           deserves something special.
         </h1>
-
-        <button class="open-btn" id="openBtn">Open it <span>♡</span></button>
+        <button class="open-btn" id="openBtn" type="button">
+          Open it <span>♡</span>
+        </button>
       </div>
     </div>
 
-    <!-- =========================
-         MAIN WEBSITE
-    ========================== -->
+    <div class="music-player" id="musicPlayer">
+      <div class="music-top">
+        <button id="musicToggle" class="music-main-btn" type="button">▶</button>
+
+        <div class="music-info">
+          <span class="music-title">Shape of My Heart</span>
+          <span id="musicStatus">Paused</span>
+        </div>
+
+        <button id="musicClose" class="music-close" type="button">×</button>
+      </div>
+
+      <div class="music-progress-wrap">
+        <span id="currentTime">0:00</span>
+        <input type="range" id="musicProgress" min="0" max="100" value="0" />
+        <span id="duration">0:00</span>
+      </div>
+
+      <div class="music-controls">
+        <div class="volume-control">
+          <span>🔊</span>
+          <input
+            type="range"
+            id="volumeControl"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.35"
+          />
+        </div>
+
+        <select id="musicTimer">
+          <option value="0">Timer: Off</option>
+          <option value="60">1 menit</option>
+          <option value="180">3 menit</option>
+          <option value="300">5 menit</option>
+        </select>
+      </div>
+    </div>
+
     <main id="mainContent" class="hidden">
-      <!-- HERO -->
       <section class="hero section" id="home">
         <div class="hero-stars"></div>
 
         <div class="hero-content">
-          <span class="eyebrow"> FOR SOMEONE SPECIAL </span>
+          <span class="eyebrow">FOR SOMEONE SPECIAL</span>
 
           <h1>
             Happy Birthday,
-            <span id="nameTyping">My Favorite Person</span>
-            <span class="heart">♡</span>
+            <span>My Favorite Person</span>
+            <b>♡</b>
           </h1>
 
           <p>
@@ -58,7 +95,7 @@
             was born.
           </p>
 
-          <button class="primary-btn" data-scroll="message">
+          <button class="primary-btn" data-scroll="message" type="button">
             Let's start →
           </button>
         </div>
@@ -69,150 +106,156 @@
         </div>
       </section>
 
-      <!-- =========================
-             BIRTHDAY MESSAGE
-        ========================== -->
       <section class="message section reveal" id="message">
         <div class="section-label">01 — TODAY IS YOUR DAY</div>
 
         <div class="message-content">
-          <span class="mini-title"> HAPPY BIRTHDAY </span>
+          <span class="mini-title">HAPPY BIRTHDAY</span>
 
           <h2>
-            Another year of you.
-            <br />
+            Another year of you.<br />
             And I'm still lucky to know you.
           </h2>
 
           <p>
-            Semoga hari ini mengingatkan kamu kalau kamu itu berharga,
-            disayangi, dan punya banyak orang yang ingin melihat kamu bahagia.
+            Hari ini bukan cuma tentang bertambahnya umur. Hari ini adalah
+            tentang merayakan seseorang yang keberadaannya berarti.
           </p>
 
-          <p>Dan salah satunya... mungkin orang yang membuat website ini.</p>
+          <p>Dan seseorang itu adalah kamu.</p>
 
-          <button class="text-btn" data-scroll="memories">
-            There's more ↓
+          <button class="text-btn" data-scroll="childhood" type="button">
+            Let's go back in time ↓
           </button>
         </div>
       </section>
 
-      <!-- =========================
-             MEMORIES
-        ========================== -->
-      <section class="memories section reveal" id="memories">
-        <div class="section-label">02 — LITTLE MEMORIES</div>
+      <section class="childhood section reveal" id="childhood">
+        <div class="section-label">02 — ONCE UPON A TIME</div>
 
-        <div class="section-heading">
-          <span class="mini-title"> OUR STORY </span>
+        <div class="childhood-content">
+          <div class="childhood-text">
+            <span class="mini-title">A LITTLE YOU</span>
+
+            <h2>
+              Before you became
+              <em>who you are today.</em>
+            </h2>
+
+            <p>
+              Jauh sebelum semua cerita yang ada sekarang, ada seorang anak kecil
+              yang belum tahu akan menjadi seseorang yang begitu berarti bagi
+              orang lain.
+            </p>
+
+            <div class="year-text">THEN <span>•</span> A LONG TIME AGO</div>
+          </div>
+
+          <div class="childhood-photo">
+            <div class="photo-frame">
+              <div class="photo-placeholder">
+                <img src="assets/images/masa-kecil.jpg" alt="Foto masa kecil" />
+              </div>
+              <div class="photo-tape"></div>
+            </div>
+
+            <span class="photo-caption">"A little version of you." ♡</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="transition-section">
+        <div class="transition-content">
+          <span>YEARS PASSED...</span>
+          <div class="transition-line"></div>
+          <h2>And then...</h2>
+        </div>
+      </section>
+
+      <section class="now section reveal" id="now">
+        <div class="section-label">03 — LOOK AT YOU NOW</div>
+
+        <div class="now-heading">
+          <span class="mini-title">NOW</span>
+          <h2>Look at you now.</h2>
+          <p>Three little snapshots of the person you've become.</p>
+        </div>
+
+        <div class="now-gallery">
+          <div class="now-photo photo-main">
+            <img src="assets/images/sekarang-1.jpg" alt="Foto sekarang 1" />
+            <div class="photo-overlay">
+              <span>01</span>
+              <p>One of my favorites.</p>
+            </div>
+          </div>
+
+          <div class="now-side">
+            <div class="now-photo">
+              <img src="assets/images/sekarang-2.jpg" alt="Foto sekarang 2" />
+              <div class="photo-overlay">
+                <span>02</span>
+                <p>Another little moment.</p>
+              </div>
+            </div>
+
+            <div class="now-photo">
+              <img src="assets/images/sekarang-3.jpg" alt="Foto sekarang 3" />
+              <div class="photo-overlay">
+                <span>03</span>
+                <p>And another one.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="then-now section reveal" id="thenNow">
+        <div class="section-label">04 — THEN → NOW</div>
+
+        <div class="then-now-heading">
+          <span class="mini-title">TIME CHANGES EVERYTHING</span>
 
           <h2>
-            Some moments are
-            <em>worth remembering.</em>
+            From <em>then</em>
+            to now.
           </h2>
 
-          <p>Klik setiap kartu. Cerita lengkapnya akan muncul.</p>
-        </div>
-
-        <div class="memory-grid">
-          <div class="memory-card" data-memory="first">
-            <div class="memory-number">01</div>
-
-            <div class="memory-icon">♡</div>
-
-            <h3>The Beginning</h3>
-
-            <p>Where everything started.</p>
-
-            <span class="click-text"> click me → </span>
-          </div>
-
-          <div class="memory-card" data-memory="moment">
-            <div class="memory-number">02</div>
-
-            <div class="memory-icon">✦</div>
-
-            <h3>Little Moments</h3>
-
-            <p>The small things I remember.</p>
-
-            <span class="click-text"> click me → </span>
-          </div>
-
-          <div class="memory-card" data-memory="favorite">
-            <div class="memory-number">03</div>
-
-            <div class="memory-icon">♥</div>
-
-            <h3>My Favorite</h3>
-
-            <p>A moment I wouldn't trade.</p>
-
-            <span class="click-text"> click me → </span>
-          </div>
-        </div>
-      </section>
-
-      <!-- =========================
-             MEMORY POPUP
-        ========================== -->
-      <div class="memory-modal" id="memoryModal">
-        <div class="modal-box">
-          <button class="close-modal" id="closeModal">×</button>
-
-          <span class="mini-title" id="modalLabel"> A LITTLE MEMORY </span>
-
-          <h2 id="modalTitle">The Beginning</h2>
-
-          <p id="modalText">
-            Some stories start quietly, but become something meaningful.
+          <p>
+            Geser slider untuk melihat perjalanan dari masa kecil sampai sekarang.
           </p>
-
-          <div class="modal-heart">♡</div>
         </div>
-      </div>
 
-      <!-- =========================
-             MINI GAME
-        ========================== -->
-      <section class="quiz section reveal" id="quiz">
-        <div class="section-label">03 — A LITTLE GAME</div>
-
-        <div class="quiz-box">
-          <span class="mini-title"> LET'S SEE </span>
-
-          <h2>Do you know what I like most about you?</h2>
-
-          <p class="quiz-question">Choose one.</p>
-
-          <div class="quiz-options">
-            <button class="quiz-option" data-answer="wrong">Your smile</button>
-
-            <button class="quiz-option" data-answer="correct">
-              Everything about you
-            </button>
-
-            <button class="quiz-option" data-answer="wrong">
-              Your random behavior
-            </button>
-
-            <button class="quiz-option" data-answer="wrong">
-              Your cute face
-            </button>
+        <div class="comparison">
+          <div class="comparison-image now-image">
+            <img src="assets/images/sekarang-1.jpg" alt="Now" />
+            <span class="comparison-label">NOW</span>
           </div>
 
-          <div class="quiz-result" id="quizResult"></div>
+          <div class="comparison-image then-image">
+            <img src="assets/images/masa-kecil.jpg" alt="Then" />
+            <span class="comparison-label">THEN</span>
+          </div>
+
+          <div class="slider-line" id="sliderLine">
+            <div class="slider-button">↔</div>
+          </div>
+
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value="50"
+            id="comparisonSlider"
+          />
         </div>
       </section>
 
-      <!-- =========================
-             LITTLE THINGS
-        ========================== -->
       <section class="things section reveal" id="things">
-        <div class="section-label">04 — LITTLE THINGS</div>
+        <div class="section-label">05 — LITTLE THINGS</div>
 
         <div class="section-heading">
-          <span class="mini-title"> YOU </span>
+          <span class="mini-title">YOU</span>
 
           <h2>
             Things I secretly
@@ -221,14 +264,13 @@
         </div>
 
         <div class="flip-grid">
-          <div class="flip-card">
+          <div class="flip-card" tabindex="0" aria-label="Reveal card 1">
             <div class="flip-inner">
               <div class="flip-front">
                 <span>01</span>
                 <h3>Your Smile</h3>
                 <p>tap to reveal</p>
               </div>
-
               <div class="flip-back">
                 <span>♡</span>
                 <p>
@@ -239,32 +281,30 @@
             </div>
           </div>
 
-          <div class="flip-card">
+          <div class="flip-card" tabindex="0" aria-label="Reveal card 2">
             <div class="flip-inner">
               <div class="flip-front">
                 <span>02</span>
                 <h3>Your Little Things</h3>
                 <p>tap to reveal</p>
               </div>
-
               <div class="flip-back">
                 <span>✦</span>
                 <p>
-                  Hal-hal kecil yang mungkin kamu anggap biasa, justru sering
-                  aku ingat.
+                  Hal-hal kecil yang mungkin kamu anggap biasa, justru sering aku
+                  ingat.
                 </p>
               </div>
             </div>
           </div>
 
-          <div class="flip-card">
+          <div class="flip-card" tabindex="0" aria-label="Reveal card 3">
             <div class="flip-inner">
               <div class="flip-front">
                 <span>03</span>
                 <h3>Simply You</h3>
                 <p>tap to reveal</p>
               </div>
-
               <div class="flip-back">
                 <span>♥</span>
                 <p>
@@ -277,31 +317,55 @@
         </div>
       </section>
 
-      <!-- =========================
-             LETTER
-        ========================== -->
+      <section class="quiz section reveal" id="quiz">
+        <div class="section-label">06 — A LITTLE GAME</div>
+
+        <div class="quiz-box">
+          <span class="mini-title">LET'S SEE</span>
+          <h2>Do you know what I like most about you?</h2>
+
+          <p class="quiz-question">Choose one.</p>
+
+          <div class="quiz-options">
+            <button class="quiz-option" data-answer="wrong" type="button">
+              Your smile
+            </button>
+            <button class="quiz-option" data-answer="correct" type="button">
+              Everything about you
+            </button>
+            <button class="quiz-option" data-answer="wrong" type="button">
+              Your random behavior
+            </button>
+            <button class="quiz-option" data-answer="wrong" type="button">
+              Your cute face
+            </button>
+          </div>
+
+          <div class="quiz-result" id="quizResult" aria-live="polite"></div>
+        </div>
+      </section>
+
       <section class="letter section reveal" id="letter">
-        <div class="section-label">05 — A LETTER FOR YOU</div>
+        <div class="section-label">07 — A LETTER FOR YOU</div>
 
         <div class="letter-wrapper">
           <div class="letter-envelope" id="letterEnvelope">
-            <div class="envelope-top"></div>
+            <div class="envelope-flap"></div>
 
             <div class="envelope-body">
-              <span class="envelope-heart"> ♡ </span>
+              <span class="envelope-heart">♡</span>
 
               <p>
-                A letter
-                <br />
+                A letter<br />
                 just for you.
               </p>
 
-              <button id="readLetter">Open Letter</button>
+              <button id="readLetter" type="button">Open Letter</button>
             </div>
           </div>
 
           <div class="letter-paper" id="letterPaper">
-            <div class="letter-date">08.09.2026</div>
+            <div class="letter-date">19.09.2026</div>
 
             <h2>Dear My Favorite Person,</h2>
 
@@ -319,8 +383,14 @@
               </p>
 
               <p>
-                Semoga di umurmu yang baru ini, kamu menemukan lebih banyak
-                alasan untuk tersenyum.
+                Dari seorang anak kecil di foto tadi, sampai menjadi kamu yang
+                sekarang, aku harap kamu selalu bangga dengan perjalananmu
+                sendiri.
+              </p>
+
+              <p>
+                Semoga di umurmu yang baru ini, kamu menemukan lebih banyak alasan
+                untuk tersenyum.
               </p>
 
               <p>Keep being you. Because you are already enough.</p>
@@ -334,77 +404,63 @@
         </div>
       </section>
 
-      <!-- =========================
-             WISH
-        ========================== -->
       <section class="wish section reveal" id="wish">
-        <div class="section-label">06 — MY WISH</div>
+        <div class="section-label">08 — MY WISH</div>
 
         <div class="wish-content">
-          <span class="mini-title"> FOR YOUR NEW CHAPTER </span>
+          <span class="mini-title">FOR YOUR NEW CHAPTER</span>
 
           <h2>I wish you...</h2>
 
           <div class="wish-buttons">
-            <button data-wish="happiness">Happiness</button>
-
-            <button data-wish="success">Success</button>
-
-            <button data-wish="dreams">Dreams</button>
-
-            <button data-wish="love">Love</button>
+            <button data-wish="happiness" type="button">Happiness</button>
+            <button data-wish="success" type="button">Success</button>
+            <button data-wish="dreams" type="button">Dreams</button>
+            <button data-wish="love" type="button">Love</button>
           </div>
 
           <div class="wish-message" id="wishMessage">Choose one ♡</div>
         </div>
       </section>
 
-      <!-- =========================
-             FINAL SURPRISE
-        ========================== -->
-      <section class="closing section reveal" id="closing">
+      <section class="closing section reveal">
         <div class="closing-content">
-          <span class="mini-title"> ONE LAST THING </span>
+          <span class="mini-title">ONE LAST THING</span>
 
           <h2>Before you leave...</h2>
 
-          <button class="surprise-btn" id="surpriseBtn">
+          <button class="surprise-btn" id="surpriseBtn" type="button">
             Open my last surprise ♡
           </button>
         </div>
       </section>
-
-      <!-- =========================
-             FINAL SCREEN
-        ========================== -->
-      <div class="final-screen" id="finalScreen">
-        <div class="final-hearts"></div>
-
-        <div class="final-content">
-          <span> HAPPY BIRTHDAY </span>
-
-          <h1>
-            My Favorite Person
-            <b>♡</b>
-          </h1>
-
-          <p>Thank you for being part of my life.</p>
-
-          <div class="final-message">
-            I hope this year gives you everything your heart wishes for.
-          </div>
-
-          <button id="backHome">Start again ↗</button>
-        </div>
-      </div>
-
-      <!-- FOOTER -->
-      <footer>
-        <p>Made with love ♡</p>
-
-        <span> 08.09.2026 </span>
-      </footer>
     </main>
+
+    <div class="final-screen" id="finalScreen">
+      <div class="final-content">
+        <span>HAPPY BIRTHDAY</span>
+
+        <h1>
+          My Favorite Person
+          <b>♡</b>
+        </h1>
+
+        <p>From that little kid... to the person you are today.</p>
+
+        <div class="final-message">
+          I'm glad you became you.
+          <br />
+          I hope this year gives you everything your heart wishes for.
+        </div>
+
+        <button id="backHome" type="button">Start again ↗</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>Made with love ♡</p>
+      <span>2026</span>
+    </footer>
 
     <script src="assets/js/script.js"></script>
   </body>

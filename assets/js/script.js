@@ -1,319 +1,430 @@
-/* =========================
-   OPENING
-========================= */
+﻿(function () {
+  const openingScreen = document.getElementById("openingScreen");
+  const openBtn = document.getElementById("openBtn");
+  const mainContent = document.getElementById("mainContent");
+  const bgMusic = document.getElementById("bgMusic");
+  const musicPlayer = document.getElementById("musicPlayer");
+  const musicToggle = document.getElementById("musicToggle");
+  const musicClose = document.getElementById("musicClose");
+  const musicStatus = document.getElementById("musicStatus");
+  const musicProgress = document.getElementById("musicProgress");
+  const currentTimeDisplay = document.getElementById("currentTime");
+  const durationDisplay = document.getElementById("duration");
+  const volumeControl = document.getElementById("volumeControl");
+  const musicTimer = document.getElementById("musicTimer");
+  const comparisonSlider = document.getElementById("comparisonSlider");
+  const thenImage = document.querySelector(".then-image");
+  const sliderLine = document.getElementById("sliderLine");
+  const readLetter = document.getElementById("readLetter");
+  const letterEnvelope = document.getElementById("letterEnvelope");
+  const letterPaper = document.getElementById("letterPaper");
+  const quizResult = document.getElementById("quizResult");
+  const wishMessage = document.getElementById("wishMessage");
+  const surpriseBtn = document.getElementById("surpriseBtn");
+  const finalScreen = document.getElementById("finalScreen");
+  const backHome = document.getElementById("backHome");
 
-const openingScreen = document.getElementById("openingScreen");
-const openBtn = document.getElementById("openBtn");
-const mainContent = document.getElementById("mainContent");
+  let musicTimerTimeout = null;
 
-openBtn.addEventListener("click", () => {
-  openingScreen.classList.add("hide");
+  if (bgMusic) {
+    bgMusic.volume = 0.35;
+  }
 
-  setTimeout(() => {
-    mainContent.classList.remove("hidden");
-    mainContent.classList.add("show");
-
-    createHearts(8);
-  }, 500);
-});
-
-/* =========================
-   SMOOTH SCROLL
-========================= */
-
-document.querySelectorAll("[data-scroll]").forEach((button) => {
-  button.addEventListener("click", () => {
-    const target = document.getElementById(button.dataset.scroll);
-
-    if (target) {
-      target.scrollIntoView({
-        behavior: "smooth",
-      });
+  function formatTime(seconds) {
+    if (!Number.isFinite(seconds)) {
+      return "0:00";
     }
-  });
-});
 
-/* =========================
-   SECTION REVEAL
-========================= */
+    const minutes = Math.floor(seconds / 60);
+    const secondsPart = Math.floor(seconds % 60)
+      .toString()
+      .padStart(2, "0");
 
-const revealElements = document.querySelectorAll(".reveal");
+    return `${minutes}:${secondsPart}`;
+  }
 
-const revealObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
+  function setMusicStatus(message) {
+    if (musicStatus) {
+      musicStatus.textContent = message;
+    }
+  }
+
+  function updateMusicUI() {
+    if (!bgMusic || !Number.isFinite(bgMusic.duration)) {
+      return;
+    }
+
+    const progress =
+      bgMusic.duration > 0 ? (bgMusic.currentTime / bgMusic.duration) * 100 : 0;
+
+    if (musicProgress) {
+      musicProgress.value = progress;
+    }
+
+    if (currentTimeDisplay) {
+      currentTimeDisplay.textContent = formatTime(bgMusic.currentTime);
+    }
+
+    if (durationDisplay) {
+      durationDisplay.textContent = formatTime(bgMusic.duration);
+    }
+  }
+
+  function playMusic() {
+    if (!bgMusic) {
+      return;
+    }
+
+    const playPromise = bgMusic.play();
+
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise
+        .then(() => {
+          if (musicPlayer) {
+            musicPlayer.classList.add("active");
+          }
+
+          if (musicToggle) {
+            musicToggle.textContent = "Ⅱ";
+          }
+
+          setMusicStatus("Playing");
+        })
+        .catch(() => {
+          setMusicStatus("Klik play untuk memulai");
+        });
+    } else {
+      setMusicStatus("Klik play untuk memulai");
+    }
+  }
+
+  function pauseMusic() {
+    if (!bgMusic) {
+      return;
+    }
+
+    bgMusic.pause();
+
+    if (musicToggle) {
+      musicToggle.textContent = "▶";
+    }
+
+    setMusicStatus("Paused");
+  }
+
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "float-heart";
+    heart.textContent = Math.random() > 0.5 ? "♡" : "♥";
+    heart.style.left = `${Math.random() * 100}vw`;
+    heart.style.bottom = `${Math.random() * 20}vh`;
+    heart.style.fontSize = `${12 + Math.random() * 20}px`;
+    heart.style.animationDuration = `${2 + Math.random() * 2}s`;
+    document.body.appendChild(heart);
+
+    window.setTimeout(() => {
+      heart.remove();
+    }, 4000);
+  }
+
+  function createHearts(amount = 10) {
+    for (let index = 0; index < amount; index += 1) {
+      window.setTimeout(() => {
+        createHeart();
+      }, index * 180);
+    }
+  }
+
+  if (openBtn) {
+    openBtn.addEventListener("click", () => {
+      if (openingScreen) {
+        openingScreen.classList.add("hide");
+      }
+
+      if (mainContent) {
+        mainContent.classList.remove("hidden");
+        mainContent.classList.add("show");
+      }
+
+      if (musicPlayer) {
+        musicPlayer.classList.add("active");
+      }
+
+      playMusic();
+      createHearts(8);
+    });
+  }
+
+  if (musicToggle) {
+    musicToggle.addEventListener("click", () => {
+      if (!bgMusic) {
+        return;
+      }
+
+      if (bgMusic.paused) {
+        playMusic();
+      } else {
+        pauseMusic();
       }
     });
-  },
-  {
-    threshold: 0.15,
-  },
-);
-
-revealElements.forEach((element) => {
-  revealObserver.observe(element);
-});
-
-/* =========================
-   MEMORY DATA
-========================= */
-
-const memories = {
-  first: {
-    label: "THE BEGINNING",
-    title: "Where it all started",
-    text: "Setiap cerita pasti punya awal. Dan entah bagaimana, dari sekian banyak orang di dunia, cerita ini mempertemukan kita.",
-  },
-
-  moment: {
-    label: "LITTLE MOMENTS",
-    title: "The little things",
-    text: "Kadang bukan momen besar yang paling diingat. Justru percakapan kecil, candaan random, atau hal sederhana yang diam-diam menjadi kenangan.",
-  },
-
-  favorite: {
-    label: "MY FAVORITE",
-    title: "A moment worth keeping",
-    text: "Kalau aku boleh menyimpan beberapa momen selamanya, mungkin akan ada banyak momen yang melibatkan kamu di dalamnya.",
-  },
-};
-
-/* =========================
-   MEMORY MODAL
-========================= */
-
-const memoryCards = document.querySelectorAll(".memory-card");
-
-const memoryModal = document.getElementById("memoryModal");
-
-const closeModal = document.getElementById("closeModal");
-
-const modalLabel = document.getElementById("modalLabel");
-
-const modalTitle = document.getElementById("modalTitle");
-
-const modalText = document.getElementById("modalText");
-
-memoryCards.forEach((card) => {
-  card.addEventListener("click", () => {
-    const key = card.dataset.memory;
-    const memory = memories[key];
-
-    modalLabel.textContent = memory.label;
-
-    modalTitle.textContent = memory.title;
-
-    modalText.textContent = memory.text;
-
-    memoryModal.classList.add("active");
-
-    createHearts(4);
-  });
-});
-
-closeModal.addEventListener("click", () => {
-  memoryModal.classList.remove("active");
-});
-
-memoryModal.addEventListener("click", (event) => {
-  if (event.target === memoryModal) {
-    memoryModal.classList.remove("active");
   }
-});
 
-/* =========================
-   QUIZ
-========================= */
+  if (musicClose) {
+    musicClose.addEventListener("click", () => {
+      pauseMusic();
 
-const quizOptions = document.querySelectorAll(".quiz-option");
+      if (musicPlayer) {
+        musicPlayer.classList.remove("active");
+      }
+    });
+  }
 
-const quizResult = document.getElementById("quizResult");
+  if (bgMusic) {
+    bgMusic.addEventListener("timeupdate", updateMusicUI);
+    bgMusic.addEventListener("loadedmetadata", () => {
+      if (durationDisplay) {
+        durationDisplay.textContent = formatTime(bgMusic.duration);
+      }
+    });
+    bgMusic.addEventListener("play", () => {
+      if (musicToggle) {
+        musicToggle.textContent = "Ⅱ";
+      }
+      setMusicStatus("Playing");
+    });
+    bgMusic.addEventListener("pause", () => {
+      if (musicToggle) {
+        musicToggle.textContent = "▶";
+      }
 
-quizOptions.forEach((option) => {
-  option.addEventListener("click", () => {
-    quizOptions.forEach((item) => {
-      item.classList.remove("correct");
-      item.classList.remove("wrong");
+      if (musicStatus && musicStatus.textContent !== "Timer selesai") {
+        setMusicStatus("Paused");
+      }
+    });
+    bgMusic.addEventListener("ended", () => {
+      if (musicToggle) {
+        musicToggle.textContent = "▶";
+      }
+      setMusicStatus("Paused");
+    });
+    bgMusic.addEventListener("error", () => {
+      setMusicStatus("Klik play untuk memulai");
+    });
+  }
+
+  if (musicProgress && bgMusic) {
+    musicProgress.addEventListener("input", () => {
+      if (!Number.isFinite(bgMusic.duration)) {
+        return;
+      }
+
+      bgMusic.currentTime = (Number(musicProgress.value) / 100) * bgMusic.duration;
+    });
+  }
+
+  if (volumeControl && bgMusic) {
+    volumeControl.addEventListener("input", () => {
+      bgMusic.volume = Number(volumeControl.value) || 0;
+    });
+  }
+
+  if (musicTimer) {
+    musicTimer.addEventListener("change", () => {
+      window.clearTimeout(musicTimerTimeout);
+
+      const selectedSeconds = Number(musicTimer.value);
+
+      if (selectedSeconds === 0) {
+        setMusicStatus(bgMusic && !bgMusic.paused ? "Playing" : "Paused");
+        return;
+      }
+
+      setMusicStatus(`Timer ${selectedSeconds / 60} menit`);
+
+      musicTimerTimeout = window.setTimeout(() => {
+        pauseMusic();
+        if (musicTimer) {
+          musicTimer.value = "0";
+        }
+        setMusicStatus("Timer selesai");
+      }, selectedSeconds * 1000);
+    });
+  }
+
+  document.querySelectorAll("[data-scroll]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const targetId = button.dataset.scroll;
+      if (!targetId) {
+        return;
+      }
+
+      const target = document.getElementById(targetId);
+      if (!target) {
+        return;
+      }
+
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  });
+
+  function initializeReveal() {
+    const revealElements = document.querySelectorAll(".reveal");
+
+    if (!revealElements.length) {
+      return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      revealElements.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+      }
+    );
+
+    revealElements.forEach((element) => revealObserver.observe(element));
+  }
+
+  initializeReveal();
+
+  function updateComparison() {
+    if (!comparisonSlider || !thenImage || !sliderLine) {
+      return;
+    }
+
+    const value = Number(comparisonSlider.value);
+    thenImage.style.width = `${value}%`;
+    sliderLine.style.left = `${value}%`;
+  }
+
+  if (comparisonSlider) {
+    comparisonSlider.addEventListener("input", updateComparison);
+    updateComparison();
+  }
+
+  document.querySelectorAll(".flip-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      card.classList.toggle("flipped");
+      card.classList.toggle("active");
     });
 
-    if (option.dataset.answer === "correct") {
-      option.classList.add("correct");
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        card.click();
+      }
+    });
+  });
 
-      quizResult.textContent =
-        "Correct. But honestly... there isn't just one thing. ♡";
+  const quizOptions = document.querySelectorAll(".quiz-option");
+  quizOptions.forEach((option) => {
+    option.addEventListener("click", () => {
+      quizOptions.forEach((item) => {
+        item.classList.remove("correct", "wrong");
+      });
 
-      createHearts(6);
-    } else {
-      option.classList.add("wrong");
+      if (option.dataset.answer === "correct") {
+        option.classList.add("correct");
+        if (quizResult) {
+          quizResult.textContent = "Correct. But honestly... there isn't just one thing. ♡";
+        }
+        createHearts(6);
+      } else {
+        option.classList.add("wrong");
+        if (quizResult) {
+          quizResult.textContent = "Nice try... but you know there's a better answer. 👀";
+        }
+      }
+    });
+  });
 
-      quizResult.textContent =
-        "Nice try... but you know there's a better answer. 👀";
+  if (readLetter) {
+    readLetter.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      if (letterEnvelope) {
+        letterEnvelope.classList.add("opened");
+      }
+
+      window.setTimeout(() => {
+        if (letterPaper) {
+          letterPaper.classList.add("show");
+        }
+        createHearts(5);
+      }, 500);
+    });
+  }
+
+  const wishes = {
+    happiness: "Semoga kamu selalu punya alasan untuk tersenyum, bahkan di hari-hari yang sulit. ♡",
+    success: "Semoga semua usaha dan kerja kerasmu membawa kamu semakin dekat dengan impianmu.",
+    dreams: "Semoga satu per satu hal yang kamu impikan menemukan jalannya untuk menjadi nyata.",
+    love: "Semoga kamu selalu dikelilingi oleh orang-orang yang tulus menyayangi dan menghargaimu. ♡",
+  };
+
+  document.querySelectorAll(".wish-buttons button").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".wish-buttons button").forEach((item) => {
+        item.classList.remove("active");
+      });
+
+      button.classList.add("active");
+
+      const selectedWish = button.dataset.wish;
+      if (wishMessage) {
+        wishMessage.textContent = wishes[selectedWish] || "Choose one ♡";
+      }
+
+      createHearts(3);
+    });
+  });
+
+  if (surpriseBtn) {
+    surpriseBtn.addEventListener("click", () => {
+      if (finalScreen) {
+        finalScreen.classList.add("active");
+      }
+
+      if (bgMusic) {
+        bgMusic.volume = 0.35;
+        if (bgMusic.paused) {
+          playMusic();
+        }
+      }
+
+      createHearts(30);
+    });
+  }
+
+  if (backHome) {
+    backHome.addEventListener("click", () => {
+      if (finalScreen) {
+        finalScreen.classList.remove("active");
+      }
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && finalScreen) {
+      finalScreen.classList.remove("active");
     }
   });
-});
-
-/* =========================
-   FLIP CARDS
-========================= */
-
-const flipCards = document.querySelectorAll(".flip-card");
-
-flipCards.forEach((card) => {
-  card.addEventListener("click", () => {
-    card.classList.toggle("active");
-  });
-});
-
-/* =========================
-   LETTER
-========================= */
-
-const readLetter = document.getElementById("readLetter");
-
-const letterEnvelope = document.getElementById("letterEnvelope");
-
-const letterPaper = document.getElementById("letterPaper");
-
-readLetter.addEventListener("click", () => {
-  letterEnvelope.classList.add("opened");
-
-  setTimeout(() => {
-    letterPaper.classList.add("show");
-
-    createHearts(5);
-  }, 500);
-});
-
-/* =========================
-   WISHES
-========================= */
-
-const wishButtons = document.querySelectorAll(".wish-buttons button");
-
-const wishMessage = document.getElementById("wishMessage");
-
-const wishes = {
-  happiness:
-    "Semoga kamu selalu punya alasan untuk tersenyum, bahkan di hari-hari yang sulit. ♡",
-
-  success:
-    "Semoga semua usaha dan kerja kerasmu membawa kamu semakin dekat dengan impianmu.",
-
-  dreams:
-    "Semoga satu per satu hal yang kamu impikan menemukan jalannya untuk menjadi nyata.",
-
-  love: "Semoga kamu selalu dikelilingi oleh orang-orang yang tulus menyayangi dan menghargaimu. ♡",
-};
-
-wishButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    wishButtons.forEach((item) => {
-      item.classList.remove("active");
-    });
-
-    button.classList.add("active");
-
-    const type = button.dataset.wish;
-
-    wishMessage.textContent = wishes[type];
-
-    createHearts(3);
-  });
-});
-
-/* =========================
-   FINAL SURPRISE
-========================= */
-
-const surpriseBtn = document.getElementById("surpriseBtn");
-
-const finalScreen = document.getElementById("finalScreen");
-
-surpriseBtn.addEventListener("click", () => {
-  finalScreen.classList.add("active");
-
-  createFinalHearts();
-});
-
-/* =========================
-   BACK HOME
-========================= */
-
-const backHome = document.getElementById("backHome");
-
-backHome.addEventListener("click", () => {
-  finalScreen.classList.remove("active");
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-});
-
-/* =========================
-   FLOATING HEART
-========================= */
-
-function createHeart() {
-  const heart = document.createElement("div");
-
-  heart.className = "float-heart";
-
-  heart.textContent = Math.random() > 0.5 ? "♡" : "♥";
-
-  heart.style.left = Math.random() * 100 + "vw";
-
-  heart.style.bottom = Math.random() * 20 + "vh";
-
-  heart.style.fontSize = 12 + Math.random() * 20 + "px";
-
-  heart.style.animationDuration = 2 + Math.random() * 2 + "s";
-
-  document.body.appendChild(heart);
-
-  setTimeout(() => {
-    heart.remove();
-  }, 4000);
-}
-
-function createHearts(amount) {
-  for (let i = 0; i < amount; i++) {
-    setTimeout(() => {
-      createHeart();
-    }, i * 180);
-  }
-}
-
-/* =========================
-   FINAL HEARTS
-========================= */
-
-function createFinalHearts() {
-  for (let i = 0; i < 25; i++) {
-    setTimeout(() => {
-      createHeart();
-    }, i * 100);
-  }
-}
-
-/* =========================
-   RANDOM SMALL HEART
-========================= */
-
-setInterval(() => {
-  if (document.visibilityState === "visible" && Math.random() > 0.6) {
-    createHeart();
-  }
-}, 5000);
-
-/* =========================
-   ESC CLOSE MODAL
-========================= */
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    memoryModal.classList.remove("active");
-  }
-});
+})();
