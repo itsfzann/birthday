@@ -3,6 +3,22 @@
   const openBtn = document.getElementById("openBtn");
   const mainContent = document.getElementById("mainContent");
   const bgMusic = document.getElementById("bgMusic");
+
+  if (openingScreen) {
+    openingScreen.style.display = "none";
+    openingScreen.style.opacity = "0";
+    openingScreen.style.visibility = "hidden";
+    openingScreen.style.pointerEvents = "none";
+    openingScreen.classList.remove("hide");
+  }
+
+  if (mainContent) {
+    mainContent.style.display = "block";
+    mainContent.style.opacity = "1";
+    mainContent.style.visibility = "visible";
+    mainContent.classList.remove("hidden");
+    mainContent.classList.add("show");
+  }
   const musicPlayer = document.getElementById("musicPlayer");
   const musicToggle = document.getElementById("musicToggle");
   const musicClose = document.getElementById("musicClose");
@@ -75,6 +91,16 @@
       return;
     }
 
+    if (musicPlayer) {
+      musicPlayer.classList.add("active");
+    }
+
+    if (musicToggle) {
+      musicToggle.textContent = "Ⅱ";
+    }
+
+    setMusicStatus("Playing");
+
     const playPromise = bgMusic.play();
 
     if (playPromise && typeof playPromise.then === "function") {
@@ -91,10 +117,11 @@
           setMusicStatus("Playing");
         })
         .catch(() => {
+          if (musicToggle) {
+            musicToggle.textContent = "▶";
+          }
           setMusicStatus("Klik play untuk memulai");
         });
-    } else {
-      setMusicStatus("Klik play untuk memulai");
     }
   }
 
@@ -104,6 +131,10 @@
     }
 
     bgMusic.pause();
+
+    if (musicPlayer) {
+      musicPlayer.classList.add("active");
+    }
 
     if (musicToggle) {
       musicToggle.textContent = "▶";
@@ -127,6 +158,27 @@
     }, 4000);
   }
 
+  function burstConfetti(amount = 80) {
+    const palette = ["#f5b4c8", "#b5d7ff", "#f6e7a8", "#b9f0d1", "#d9c3ff"];
+
+    for (let index = 0; index < amount; index += 1) {
+      const confetti = document.createElement("span");
+      confetti.className = "confetti-piece";
+      confetti.style.left = `${Math.random() * 100}%`;
+      confetti.style.background =
+        palette[Math.floor(Math.random() * palette.length)];
+      confetti.style.animationDelay = `${(Math.random() * 0.35).toFixed(2)}s`;
+      confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+      document.body.appendChild(confetti);
+    }
+
+    window.setTimeout(() => {
+      document
+        .querySelectorAll(".confetti-piece")
+        .forEach((piece) => piece.remove());
+    }, 2600);
+  }
+
   function createHearts(amount = 10) {
     for (let index = 0; index < amount; index += 1) {
       window.setTimeout(() => {
@@ -139,12 +191,17 @@
     openBtn.addEventListener("click", () => {
       if (openingScreen) {
         openingScreen.classList.add("hide");
+        openingScreen.style.opacity = "0";
+        openingScreen.style.visibility = "hidden";
+        openingScreen.style.pointerEvents = "none";
       }
 
       if (mainContent) {
         mainContent.classList.remove("hidden");
         mainContent.classList.add("show");
         mainContent.style.display = "block";
+        mainContent.style.opacity = "1";
+        mainContent.style.visibility = "visible";
       }
 
       if (musicPlayer) {
@@ -157,7 +214,6 @@
         }
       }, 650);
 
-      playMusic();
       createHearts(8);
     });
   }
@@ -174,6 +230,8 @@
         pauseMusic();
       }
     });
+
+    musicToggle.setAttribute("aria-label", "Main music toggle");
   }
 
   if (musicClose) {
@@ -187,6 +245,10 @@
   }
 
   if (bgMusic) {
+    bgMusic.muted = false;
+    bgMusic.volume = 0.35;
+    bgMusic.pause();
+
     bgMusic.addEventListener("timeupdate", updateMusicUI);
     bgMusic.addEventListener("loadedmetadata", () => {
       if (durationDisplay) {
@@ -262,6 +324,15 @@
   document.querySelectorAll("[data-scroll]").forEach((button) => {
     button.addEventListener("click", () => {
       const targetId = button.dataset.scroll;
+
+      if (button.classList.contains("primary-btn") && musicPlayer) {
+        musicPlayer.classList.add("active");
+
+        if (bgMusic && bgMusic.paused) {
+          playMusic();
+        }
+      }
+
       if (!targetId) {
         return;
       }
@@ -351,6 +422,7 @@
             "Correct. But honestly... there isn't just one thing. ♡";
         }
         createHearts(6);
+        burstConfetti(80);
       } else {
         option.classList.add("wrong");
         if (quizResult) {
@@ -374,6 +446,7 @@
           letterPaper.classList.add("show");
         }
         createHearts(5);
+        burstConfetti(60);
       }, 500);
     });
   }
@@ -405,6 +478,52 @@
     });
   });
 
+  const galleryLightbox = document.getElementById("galleryLightbox");
+  const galleryImage = document.getElementById("galleryImage");
+  const galleryClose = document.getElementById("galleryClose");
+
+  function openGalleryModal(imageElement) {
+    if (!galleryLightbox || !galleryImage || !imageElement) {
+      return;
+    }
+
+    galleryImage.src = imageElement.src;
+    galleryImage.alt = imageElement.alt || "Photo gallery";
+    galleryLightbox.classList.add("active");
+    galleryLightbox.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  }
+
+  function closeGalleryModal() {
+    if (!galleryLightbox) {
+      return;
+    }
+
+    galleryLightbox.classList.remove("active");
+    galleryLightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  }
+
+  document
+    .querySelectorAll(".now-photo img, .photo-frame img, .comparison-image img")
+    .forEach((image) => {
+      image.addEventListener("click", () => {
+        openGalleryModal(image);
+      });
+    });
+
+  if (galleryClose) {
+    galleryClose.addEventListener("click", closeGalleryModal);
+  }
+
+  if (galleryLightbox) {
+    galleryLightbox.addEventListener("click", (event) => {
+      if (event.target === galleryLightbox) {
+        closeGalleryModal();
+      }
+    });
+  }
+
   if (surpriseBtn) {
     surpriseBtn.addEventListener("click", () => {
       if (finalScreen) {
@@ -419,6 +538,7 @@
       }
 
       createHearts(30);
+      burstConfetti(120);
     });
   }
 
@@ -436,8 +556,14 @@
   }
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && finalScreen) {
-      finalScreen.classList.remove("active");
+    if (event.key === "Escape") {
+      if (finalScreen) {
+        finalScreen.classList.remove("active");
+      }
+
+      if (galleryLightbox && galleryLightbox.classList.contains("active")) {
+        closeGalleryModal();
+      }
     }
   });
 });
